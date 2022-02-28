@@ -33,23 +33,11 @@ class gqTrain:
         # print(self.valDataLen)
         logging.info('data set loaded')
         self.network = GQCNN().to(self.device)
-        # self.network = ResNet(Bottleneck, [3, 4, 6, 3]).to(self.device)
 
-        # self.network.load_state_dict(torch.load(
-        #     '/home/wangchuxuan/PycharmProjects/grasp/0358finetune_epoch17_grasp0.9502_val0.9502.pth'
-        #     )
-        # )
-        self.network.load_state_dict(
-            torch.load('/home/wangchuxuan/PycharmProjects/grasp/output/' +
-                       'finetune_offpolicy/22_01_03_20:38_offpolicy01/2042_epoch70_Nacc0.43662_Pacc1.00000.pth')
-        )
 
-        # self.optimizer = torch.optim.Adam(self.network.parameters())
         self.optimizer = torch.optim.SGD(self.network.parameters(), lr=0.01, momentum=0.9,
                                          weight_decay=0.005)
-        # a = torch.optim.Adam(self.network.parameters(), amsgrad=)
         self.lrScheduler = torch.optim.lr_scheduler.ExponentialLR(self.optimizer, gamma=0.93)
-        # np.random.choice()
         self.currentEpoch = 0
 
         self.img_std = torch.tensor(np.load('im_std.npy')).cuda().float()
@@ -107,12 +95,7 @@ class gqTrain:
                 t0 = time.time()
             batchIdx += 1
 
-            if batchIdx % 4000 == 0:
-                accuracy = self.validate()
-                self.save(self.currentEpoch, accuracy)
-                self.network.train()
-            # if batchIdx > 100:
-            #     break
+
 
     def validate(self, maxBatch=3000):
         self.network.eval()
@@ -122,22 +105,7 @@ class gqTrain:
         success_pre_negative = torch.tensor(0.1).cuda()
         total_pre_positive = torch.tensor(0.1).cuda()
         total_pre_negative = torch.tensor(0.1).cuda()
-        # for img, depth, label, metric in self.valDataLoader:
-        #     pos_weight version
-        #     img -= depth.unsqueeze(1).unsqueeze(1).unsqueeze(1)
-        #     img = img.to(self.device)
-        #     label = label.to(self.device)[:, 1::2]
-        #     label_pred = self.network.get_label(img)
-        #     for i in range(len(label)):
-        #         flag = False in (label[i] == label_pred[i])
-        #         if 1 in label[i]:
-        #             if not flag:
-        #                 success_pre_true += 1
-        #             total_pre_true += 1
-        #         else:
-        #             if not flag:
-        #                 success_pre_false += 1
-        #             total_pre_false += 1
+
         for img, depth, metric in self.valDataLoader:
             img = img.permute((0, 3, 1, 2)).to(self.device).float()
             metric = metric.to(self.device).long()
@@ -146,7 +114,6 @@ class gqTrain:
             poseTensorNorm = (depth - self.pose_mean) / self.pose_std
             img = (img - self.img_mean) / self.img_std
 
-            # print(img.shpe, poseTensorNorm.shape)
 
             img -= poseTensorNorm.unsqueeze(1).unsqueeze(1)
 
