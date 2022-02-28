@@ -1,7 +1,7 @@
 import torch.nn as nn
 # from mygqcnn.graspDataLoader import GraspDataset
 import torch
-
+from torchsummary import summary
 
 class GQCNN(nn.Module):
     def __init__(self):
@@ -67,6 +67,7 @@ class GQCNN(nn.Module):
 
 if __name__ == '__main__':
     cnn = GQCNN().cuda()
+    summary(cnn, (1, 96, 96), batch_size=8)
 
 
 
