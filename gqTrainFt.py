@@ -1,7 +1,6 @@
 import torch
-from gqcnn_ft.graspDataLoader import GraspDataset
-# from mygqcnn.resNet import ResNet, Bottleneck
-from gqcnn_ft.network import GQCNN
+from graspDataLoader import GraspDataset
+from network import GQCNN
 import torch.utils.data as D
 import datetime
 import os
@@ -53,10 +52,10 @@ class gqTrain:
         # np.random.choice()
         self.currentEpoch = 0
 
-        self.img_std = torch.tensor(np.load('/home/wangchuxuan/PycharmProjects/grasp/im_std.npy')).cuda().float()
-        self.img_mean = torch.tensor(np.load('/home/wangchuxuan/PycharmProjects/grasp/im_mean.npy')).cuda().float()
-        self.pose_std = torch.tensor(np.load('/home/wangchuxuan/PycharmProjects/grasp/pose_std.npy')).cuda().float()
-        self.pose_mean = torch.tensor(np.load('/home/wangchuxuan/PycharmProjects/grasp/pose_mean.npy')).cuda().float()
+        self.img_std = torch.tensor(np.load('im_std.npy')).cuda().float()
+        self.img_mean = torch.tensor(np.load('im_mean.npy')).cuda().float()
+        self.pose_std = torch.tensor(np.load('pose_std.npy')).cuda().float()
+        self.pose_mean = torch.tensor(np.load('pose_mean.npy')).cuda().float()
 
     def train(self, log_frequency=4):
         self.network.train()
